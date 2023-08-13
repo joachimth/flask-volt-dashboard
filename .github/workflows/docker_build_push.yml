@@ -14,22 +14,18 @@ jobs:
   build_and_push:
     runs-on: ubuntu-latest
     steps:
-    - name: Check out the repository
-      uses: actions/checkout@v2
-
-    - name: Set up Docker
-      uses: docker/setup-docker-action@v1
-
+    - uses: actions/checkout@v3
+    - name: run docker-compose
+      uses: sudo-bot/action-docker-compose@latest
+      with:
+        # https://docs.docker.com/compose/reference/overview/
+        cli-args: "up --build"
+        
     - name: Login to DockerHub
       uses: docker/login-action@v1 
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-    - name: Build and push with Docker Compose
-      run: |
-        docker-compose build
-        docker-compose push
 
     - name: Get short SHA
       id: get_sha
